@@ -1,0 +1,20 @@
+# Ignore the config or in this case  (api_key.py) file
+api_key.py
+
+# Ignore all environment variable files
+*.env
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+
+# Ignore logs
+*.log
+
+# Ignore virtual environments
+venv/
+flet_app_env/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
