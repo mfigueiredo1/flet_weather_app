@@ -4,7 +4,7 @@ from api_key import API_KEY
 
 # Build out the API and get a response
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
-MAP_URL = "https://www.openstreetmap.org/export/embed.html?bbox=lon1,lat1,lon2,lat2&layer=mapnik"
+MAP_URL = "https://www.openstreetmap.org/export/embed.html?bbox={lon}%2C{lat}%2C{lon}%2C{lat}&layer=mapnik"
 
 def get_weather(city):
     params = {"q":city, "appid": API_KEY, "units": "metric"} # Use metric for Celsius
@@ -43,6 +43,11 @@ def main(page: ft.Page):
     )
 
     results_text = ft.Text("",size=18,weight=ft.FontWeight.BOLD,color=ft.colors.WHITE) # Text widget to show results
+
+    # Create a map
+    map_frame = ft.WebView(url="", width=600, height=400, visible=False) # Initially hidden, will be shown when a city is found
+    
+
  
     # Call and get the weather data
     def search_weather(e):
@@ -55,9 +60,12 @@ def main(page: ft.Page):
 
         if weather_data:
             results_text.value = f"City: {weather_data['city']}\nTemperature: {weather_data["temp"]}°C\nHumidity: {weather_data['humidity']}%\nWeather: {weather_data["weather"]}"
-
+            
+            map_frame.url = MAP_URL.format(lat=weather_data['lat'], lon=weather_data['lon'])
+            map_frame.visible = True
         else:
             results_text.value = "City not found. Try again..."
+            map_frame.visible = False # Hide the map if city not found
 
         page.update() # Update the page to reflect the changes in results_text
 
@@ -85,7 +93,8 @@ def main(page: ft.Page):
                 ft.Text("Flet my Weather", size=30, weight=ft.FontWeight.BOLD,color=ft.colors.WHITE),
                 city_input, # TextField for city input
                 search_button, # Search button
-                results_text # Text widget to show results
+                results_text, # Text widget to show results
+                map_frame # WebView for the map, initially hidden
 
             ],
         ),
